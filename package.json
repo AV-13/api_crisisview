@@ -1,19 +1,31 @@
 {
+  "name": "api-crisiview",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "migrate": "node migration.js",
+    "seed": "node seed.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:ci": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --ci --reporters=default --reporters=jest-junit",
+    "audit:ci": "npm audit --omit=dev --audit-level=high --json > reports/npm-audit.json || true"
+  },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mysql2": "^3.22.3",
     "sequelize": "^6.37.8"
   },
-  "type": "module",
-  "scripts": {
-    "start": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
-  },
   "devDependencies": {
     "jest": "^30.3.0",
+    "jest-junit": "^16.0.0",
     "supertest": "^7.2.2"
+  },
+  "jest-junit": {
+    "outputDirectory": "reports",
+    "outputName": "test-report.xml"
   }
 }

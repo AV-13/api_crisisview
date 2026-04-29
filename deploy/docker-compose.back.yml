@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: crisiview-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: incident_db
+      MYSQL_USER: crisiview
+      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - crisiview
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
+        - -u
+        - root
+        - -p${MYSQL_ROOT_PASSWORD}
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  api:
+    image: ${API_IMAGE:-crisiview-api:latest}
+    container_name: crisiview-api
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_NAME: incident_db
+      DB_USER: crisiview
+      DB_PASSWORD: ${MYSQL_APP_PASSWORD}
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      NODE_ENV: production
+    ports:
+      - "3001:3001"
+    networks:
+      - crisiview
+    restart: unless-stopped
+
+networks:
+  crisiview:
+    driver: bridge
+
+volumes:
+  mysql_data:
