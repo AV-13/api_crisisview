@@ -32,8 +32,9 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
+                sh 'docker stop sonarqube || true'
                 sh 'node -v && npm -v'
-                sh 'npm ci'
+                sh 'npm ci --no-audit --no-fund --prefer-offline'
             }
         }
 
@@ -54,6 +55,16 @@ pipeline {
 
         stage('SAST - SonarQube analysis') {
             steps {
+                sh 'docker start sonarqube || true'
+                sh '''
+                    for i in $(seq 1 90); do
+                        if curl -fsS http://sonarqube:9000/api/system/status 2>/dev/null | grep -q "UP"; then
+                            echo "Sonar ready after ${i} attempts"; exit 0
+                        fi
+                        sleep 2
+                    done
+                    echo "Sonar not ready in time"; exit 1
+                '''
                 script {
                     def scannerHome = tool name: env.SONAR_SCANNER, type: 'hudson.plugins.sonar.SonarRunnerInstallation'
                     withSonarQubeEnv(env.SONAR_SERVER) {
