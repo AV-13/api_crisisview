@@ -12,6 +12,7 @@ async function init() {
     // 1. Connect to MySQL server (no DB selected)
     const sequelizeRoot = new Sequelize('', DB_USER, DB_PASS, {
         host: DB_HOST,
+        port: process.env.DB_PORT,
         dialect: 'mysql',
         logging: false
     });

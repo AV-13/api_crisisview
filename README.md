@@ -16,6 +16,12 @@ npm install
 ## Database Setup
 
 1. Configure your MySQL connection in `db.js`.
+
+1a. (optional) Create an mySQL instance with docker:
+```bash
+docker run --name mysql-crisiview -e MYSQL_ROOT_PASSWORD=root -p 3307:3306 -d mysql:8.4.8
+```
+
 2. run migrations:
 ```bash
 node migration.js
