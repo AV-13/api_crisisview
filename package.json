@@ -7,7 +7,8 @@
     "migrate": "node migration.js",
     "seed": "node seed.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:ci": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --ci --reporters=default --reporters=jest-junit",
+    "test:integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch \"**/__tests__/*.integration.test.js\"",
+    "test:ci": "CI=1 node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --ci --reporters=default --reporters=jest-junit",
     "audit:ci": "npm audit --omit=dev --audit-level=high --json > reports/npm-audit.json || true"
   },
   "dependencies": {
